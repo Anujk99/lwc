@@ -8,20 +8,28 @@ export default class DragDropList extends LightningElement {
     { id: '4', label: 'Item 4' },
   ];
 
-  @track showPlaceholder = false;
-  draggedItemId;
+  draggedItemId = null;
   placeholderIndex = null;
+
+  get itemsWithPlaceholder() {
+    const items = [...this.items];
+    if (this.placeholderIndex !== null) {
+      items.splice(this.placeholderIndex, 0, { isPlaceholder: true });
+    }
+    return items.map((item) => ({
+      ...item,
+      className: item.isPlaceholder ? 'placeholder' : 'draggable-item',
+    }));
+  }
 
   handleDragStart(event) {
     this.draggedItemId = event.target.dataset.id;
     event.target.classList.add('dragging');
-    this.showPlaceholder = true;
   }
 
   handleDragEnd(event) {
     event.target.classList.remove('dragging');
-    this.showPlaceholder = false;
-    this.placeholderIndex = null;
+    this.placeholderIndex = null; // Reset placeholder
   }
 
   handleDragOver(event) {
@@ -29,21 +37,18 @@ export default class DragDropList extends LightningElement {
     const target = event.target;
 
     if (target.classList.contains('draggable-item')) {
-      const draggedItemIndex = this.items.findIndex(
-        (item) => item.id === this.draggedItemId
-      );
       const targetItemIndex = this.items.findIndex(
         (item) => item.id === target.dataset.id
       );
+      const draggedItemIndex = this.items.findIndex(
+        (item) => item.id === this.draggedItemId
+      );
 
-      if (draggedItemIndex !== targetItemIndex) {
-        this.placeholderIndex = targetItemIndex;
-
-        // Update list by inserting placeholder visually
-        const updatedItems = [...this.items];
-        const [draggedItem] = updatedItems.splice(draggedItemIndex, 1);
-        updatedItems.splice(targetItemIndex, 0, draggedItem);
-        this.items = updatedItems;
+      if (targetItemIndex !== this.placeholderIndex) {
+        this.placeholderIndex =
+          draggedItemIndex < targetItemIndex
+            ? targetItemIndex + 1
+            : targetItemIndex;
       }
     }
   }
