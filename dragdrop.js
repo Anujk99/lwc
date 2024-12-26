@@ -1,6 +1,6 @@
 import { LightningElement, track } from 'lwc';
 
-export default class DragDropList extends LightningElement {
+export default class DragDropDiv extends LightningElement {
   @track items = [
     { id: '1', label: 'Item 1' },
     { id: '2', label: 'Item 2' },
