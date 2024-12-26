@@ -13,6 +13,10 @@
           {item.label}
         </li>
       </template>
+      <li
+        if:true={showPlaceholder}
+        class="placeholder"
+      ></li>
     </ul>
   </div>
 </template>
