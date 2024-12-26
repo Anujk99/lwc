@@ -8,20 +8,26 @@ export default class DragDropList extends LightningElement {
     { id: '4', label: 'Item 4' },
   ];
 
+  @track showPlaceholder = false;
   draggedItemId;
+  placeholderIndex = null;
 
   handleDragStart(event) {
     this.draggedItemId = event.target.dataset.id;
     event.target.classList.add('dragging');
+    this.showPlaceholder = true;
   }
 
   handleDragEnd(event) {
     event.target.classList.remove('dragging');
+    this.showPlaceholder = false;
+    this.placeholderIndex = null;
   }
 
   handleDragOver(event) {
     event.preventDefault();
     const target = event.target;
+
     if (target.classList.contains('draggable-item')) {
       const draggedItemIndex = this.items.findIndex(
         (item) => item.id === this.draggedItemId
@@ -31,6 +37,9 @@ export default class DragDropList extends LightningElement {
       );
 
       if (draggedItemIndex !== targetItemIndex) {
+        this.placeholderIndex = targetItemIndex;
+
+        // Update list by inserting placeholder visually
         const updatedItems = [...this.items];
         const [draggedItem] = updatedItems.splice(draggedItemIndex, 1);
         updatedItems.splice(targetItemIndex, 0, draggedItem);
