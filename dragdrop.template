@@ -1,10 +1,11 @@
 <template>
   <div class="container">
     <ul class="draggable-list" ondragover={handleDragOver}>
-      <template for:each={items} for:item="item">
+      <template for:each={itemsWithPlaceholder} for:item="item">
         <li
           key={item.id}
-          class="draggable-item"
+          class={item.className}
+          if:true={!item.isPlaceholder}
           draggable="true"
           data-id={item.id}
           ondragstart={handleDragStart}
@@ -12,11 +13,12 @@
         >
           {item.label}
         </li>
+        <li
+          key="placeholder"
+          class="placeholder"
+          if:true={item.isPlaceholder}
+        ></li>
       </template>
-      <li
-        if:true={showPlaceholder}
-        class="placeholder"
-      ></li>
     </ul>
   </div>
 </template>
