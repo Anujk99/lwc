@@ -14,7 +14,7 @@ export default class DragDropList extends LightningElement {
   get itemsWithPlaceholder() {
     const items = [...this.items];
     if (this.placeholderIndex !== null) {
-      items.splice(this.placeholderIndex, 0, { isPlaceholder: true });
+      items.splice(this.placeholderIndex, 0, { id: 'placeholder', isPlaceholder: true });
     }
     return items.map((item) => ({
       ...item,
@@ -29,7 +29,19 @@ export default class DragDropList extends LightningElement {
 
   handleDragEnd(event) {
     event.target.classList.remove('dragging');
-    this.placeholderIndex = null; // Reset placeholder
+
+    if (this.placeholderIndex !== null) {
+      const draggedItemIndex = this.items.findIndex(
+        (item) => item.id === this.draggedItemId
+      );
+
+      const [draggedItem] = this.items.splice(draggedItemIndex, 1);
+      this.items.splice(this.placeholderIndex, 0, draggedItem);
+    }
+
+    // Reset placeholder
+    this.placeholderIndex = null;
+    this.draggedItemId = null;
   }
 
   handleDragOver(event) {
