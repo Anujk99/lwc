@@ -1,8 +1,8 @@
 <template>
   <div class="container">
-    <ul class="draggable-list" ondragover={handleDragOver}>
+    <div class="draggable-container" ondragover={handleDragOver}>
       <template for:each={itemsWithPlaceholder} for:item="item">
-        <li
+        <div
           key={item.id}
           class={item.className}
           if:true={!item.isPlaceholder}
@@ -12,13 +12,13 @@
           ondragend={handleDragEnd}
         >
           {item.label}
-        </li>
-        <li
+        </div>
+        <div
           key="placeholder"
           class="placeholder"
           if:true={item.isPlaceholder}
-        ></li>
+        ></div>
       </template>
-    </ul>
+    </div>
   </div>
 </template>
